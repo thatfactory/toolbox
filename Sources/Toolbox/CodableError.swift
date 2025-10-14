@@ -1,10 +1,3 @@
-//
-//  CodableError.swift
-//
-//
-//  Created by Fernando Fernandes on 18.04.24.
-//
-
 import Foundation
 
 /// Defines a `Codable` wrapper for `Error`.
