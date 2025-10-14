@@ -1,51 +1,43 @@
-//
-//  JSON.swift
-//
-//
-//  Created by Fernando Fernandes on 17.05.24.
-//
-
 import Foundation
 
-/// Loads and decodes `.json files` from the *main bundle* or *"Development Assets"* into a specified `Decodable` type.
+/// Loads the contents of a JSON resource bundled with the app or test target.
 ///
-/// This function attempts to locate a JSON file with the given filename in the main bundle or *"Development Assets"*,
-/// read its contents, and decode it into the specified type.
+/// This function searches all loaded bundles (`Bundle.allBundles`) for the first bundle
+/// that contains a resource with the given file name and a `.json` extension. If found,
+/// it loads the file contents into a `Data` object and returns it.
 ///
-/// If any step fails (file not found, data reading error, or decoding error), the function returns `nil`.
-///
-/// - Parameters:
-///   - filename: The name of the JSON file (without the `.json` extension) to be loaded.
-///   - type: The type conforming to `Decodable` that the JSON data should be decoded into.
-///
-/// - Returns: An optional value of the specified type. Returns `nil` if the file is not found,
-/// data cannot be read, or decoding fails.
-///
-/// - Note: Ensure that the JSON file is included in the main bundle of the application or
-/// listed under the *"Development Assets"* (target/General/Development Assets).
-///
-/// - Example:
-///   ```swift
-///   struct User: Decodable {
-///       let id: Int
-///       let name: String
-///   }
-///
-///   if let user: User = loadJSONFromFile(filename: "user", type: User.self) {
-///       print("User ID: \(user.id), User Name: \(user.name)")
-///   } else {
-///       print("Failed to load or decode the JSON file.")
-///   }
-///   ```
-public func loadJSONFromFile<T: Decodable>(filename: String, type: T.Type) -> T? {
-    guard let url = Bundle.main.url(forResource: filename, withExtension: "json") else {
-        return nil
+/// - Parameter fileName: The name of the JSON resource file without the `.json` extension.
+/// - Returns: A `Data` instance containing the raw bytes of the JSON file.
+/// - Throws: A ``JSONError``.
+public func jsonDataFromFile(_ fileName: String) throws(JSONError) -> Data {
+    let fileExtension = "json"
+
+    guard let bundle = Bundle.allBundles.first(
+        where: {
+            $0.url(forResource: fileName, withExtension: fileExtension) != nil
+        }
+    ) else {
+        throw .noBundleForResource(fileName)
     }
-    guard let data = try? Data(contentsOf: url) else {
-        return nil
+
+    guard let url = bundle.url(forResource: fileName, withExtension: fileExtension) else {
+        throw .noURLForResource(fileName)
     }
-    guard let decodedData = try? JSONDecoder().decode(T.self, from: data) else {
-        return nil
+
+    do {
+        return try Data(contentsOf: url)
+    } catch {
+        throw .failedToInitializeDataForResource(fileName)
     }
-    return decodedData
+}
+
+public enum JSONError: Error {
+    /// No bundle was found that contains the resource.
+    case noBundleForResource(_ fileName: String)
+
+    /// The bundle was found but the resource URL could not be resolved.
+    case noURLForResource(_ fileName: String)
+
+    /// The resource URL was found but reading its contents failed.
+    case failedToInitializeDataForResource(_ fileName: String)
 }
