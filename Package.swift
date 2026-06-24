@@ -5,8 +5,8 @@ import PackageDescription
 let package = Package(
     name: "Toolbox",
     platforms: [
-        .iOS(.v27),
-        .macOS(.v27)
+        .iOS(.v26),
+        .macOS(.v26)
     ],
     products: [
         .library(
