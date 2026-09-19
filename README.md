@@ -12,10 +12,11 @@
 A collection of useful Swift tools.
 
 ## Tools
-Tool | Description
---- | ---
-`CodableError` | Defines a `Codable` wrapper for Apple's `Error`.
-`jsonDataFromFile(_:)` | Loads the contents of a JSON resource bundled with the app or test target. Returns a `Data` instance containing the raw bytes of the JSON file.
+
+| Tool | Description |
+| --- | --- |
+| `CodableError` | Defines a `Codable` wrapper for Apple's `Error`. |
+| `jsonDataFromFile(_:)` | Loads the contents of a JSON resource bundled with the app or test target. Returns a `Data` instance containing the raw bytes of the JSON file. |
 
 ## Integration
 ### Xcode
@@ -30,7 +31,7 @@ In your `Package.swift`, add `Toolbox` as a dependency:
 dependencies: [
     .package(
         url: "https://github.com/thatfactory/toolbox",
-        from: "0.1.1"
+        from: "0.1.2"
     )
 ]
 ```

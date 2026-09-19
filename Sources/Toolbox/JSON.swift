@@ -1,4 +1,4 @@
-import Foundation
+public import Foundation
 
 /// Loads the contents of a JSON resource bundled with the app or test target.
 ///
@@ -12,11 +12,13 @@ import Foundation
 public func jsonDataFromFile(_ fileName: String) throws(JSONError) -> Data {
     let fileExtension = "json"
 
-    guard let bundle = Bundle.allBundles.first(
-        where: {
-            $0.url(forResource: fileName, withExtension: fileExtension) != nil
-        }
-    ) else {
+    guard
+        let bundle = Bundle.allBundles.first(
+            where: {
+                $0.url(forResource: fileName, withExtension: fileExtension) != nil
+            }
+        )
+    else {
         throw .noBundleForResource(fileName)
     }
 
